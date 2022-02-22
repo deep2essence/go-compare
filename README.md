@@ -6,7 +6,7 @@ A simple utility to compare dependencies of bunch of go projects and report the 
 $ go get -u github.com/deep2essence/go-compare
 
 [run]
-$ go-compare repo.lst --mod-only
+$ go-compare repo.lst --ignore-version
 
 [debug]
 $ go run main.go repo.lst

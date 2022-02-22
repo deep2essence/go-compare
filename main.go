@@ -10,8 +10,8 @@ import (
 )
 
 type params struct {
-	FilePath string
-	ModOnly  bool
+	FilePath      string
+	IgnoreVersion bool
 }
 
 func configParams(args []string) (*params, error) {
@@ -25,10 +25,14 @@ func configParams(args []string) (*params, error) {
 	}
 }
 
-func analyze(deps map[string][]string) (*[]string, error) {
+func analyze(deps map[string][]string, IgnoreVersion bool) (*[]string, error) {
 	counter := make(map[string]int)
-	for _, items := range deps {
-		for _, item := range items {
+	for _, repos := range deps {
+		for _, dep := range repos {
+			var item = dep
+			if IgnoreVersion {
+				item = strings.Split(item, " ")[0]
+			}
 			v, ok := counter[item]
 			if ok {
 				counter[item] = v + 1
@@ -110,7 +114,7 @@ func main() {
 		fmt.Printf("%v\n", err)
 		return
 	}
-	_, err = analyze(*deps)
+	_, err = analyze(*deps, params.IgnoreVersion)
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	}
