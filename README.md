@@ -7,6 +7,9 @@ $ go get -u github.com/deep2essence/go-compare
 
 [run]
 $ go-compare repo.lst --mod-only
+
+[debug]
+$ go run main.go repo.lst
 ```
 ### Ignore
 Ignore Makefile.

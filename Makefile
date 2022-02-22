@@ -61,5 +61,8 @@ test:
 unittest:
 	@go test -v ./...
 
+clear:
+	@rm -rf *.lst
+
 .PHONY: build install \
 		test clean 

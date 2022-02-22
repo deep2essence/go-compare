@@ -32,18 +32,21 @@ func analyze(deps map[string][]string) (*[]string, error) {
 			v, ok := counter[item]
 			if ok {
 				counter[item] = v + 1
+				continue
 			}
 			counter[item] = 1
 		}
 	}
 	max_cnt := len(deps)
+	fmt.Println(max_cnt)
 	var commons []string
 	for k, v := range counter {
 		if v == max_cnt {
 			commons = append(commons, k)
-			fmt.Println(v)
+			fmt.Println(k)
 		}
 	}
+	gu.List2File("common.lst", gu.ToInterfaceSlice(commons))
 	return &commons, nil
 }
 func generateMods(repos []string) (*map[string][]string, error) {
@@ -54,7 +57,11 @@ func generateMods(repos []string) (*map[string][]string, error) {
 	}
 	var deps = make(map[string][]string)
 	for _, repo := range repos {
-		key := strings.Split(repo, "/")[2]
+		var splited []string
+		if splited = strings.Split(repo, "/"); len(splited) < 3 {
+			continue
+		}
+		key := splited[2]
 		//
 		repopath := fmt.Sprintf("%s/%s", rootpath, repo)
 
@@ -67,8 +74,8 @@ func generateMods(repos []string) (*map[string][]string, error) {
 			fmt.Printf("%s not exists. You need to download.\n", modfile)
 			continue
 		}
-		lstfile := fmt.Sprintf("%s/%s", curdir, key)
-		script := fmt.Sprintf("cd %s;go list -mod=readonly -m all >> %s.lst; cd -", repopath, lstfile)
+		lstfile := fmt.Sprintf("%s/%s.lst", curdir, key)
+		script := fmt.Sprintf("cd %s;go list -mod=readonly -m all >> %s; cd -", repopath, lstfile)
 		gu.RunScripts(script)
 		items, err := gu.File2List(lstfile)
 		if err != nil {
@@ -83,7 +90,7 @@ func main() {
 	// chekc env $CODEPATH
 	rootpath := gu.GetEnv("CODEPATH")
 	if rootpath == "" {
-		fmt.Println("set CODEPATH='Your Github Source Path'")
+		fmt.Println("export CODEPATH='Your Github Source Path'")
 		return
 	}
 	// config params
