@@ -11,6 +11,5 @@ $ go-compare repo.lst --ignore-version
 [debug]
 $ go run main.go repo.lst
 ```
-### Ignore
-Ignore Makefile.
+
 
